@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MovieDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">unit-test-demo</a> &gt; <a href="index.source.html" class="el_package">io.github.dndanoff.movie.repository</a> &gt; <span class="el_source">MovieDao.java</span></div><h1>MovieDao.java</h1><pre class="source lang-java linenums">package io.github.dndanoff.movie.repository;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import io.github.dndanoff.movie.model.BookingException;
+import io.github.dndanoff.movie.model.ErrorType;
+import io.github.dndanoff.movie.model.Movie;
+import io.github.dndanoff.movie.model.MovieHall;
+import io.github.dndanoff.movie.model.Seat;
+import io.github.dndanoff.movie.model.ShowTime;
+
+<span class="nc" id="L17">public class MovieDao {</span>
+	
+	public MovieHall findMovie(Movie movie, ShowTime time) {
+<span class="nc bnc" id="L20" title="All 8 branches missed.">		if(movie == null || movie.getTitle() == null || time == null || time.getValue() == null) {</span>
+<span class="nc" id="L21">			return null;</span>
+		}
+<span class="nc" id="L23">		return DB.movies.get(movie.getTitle()+&quot;_&quot;+time.getValue());</span>
+	}
+
+	public List&lt;String&gt; getAvilableSeats(Movie movie, ShowTime time) {
+<span class="nc" id="L27">		MovieHall hall = DB.movies.get(movie.getTitle()+&quot;_&quot;+time.getValue());</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if(hall == null) {</span>
+<span class="nc" id="L29">			return null;</span>
+		}
+		
+<span class="nc" id="L32">		return hall.getSeats().stream()</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">				.filter(s -&gt; !s.isOccupied())</span>
+<span class="nc" id="L34">				.map(Seat::getNumber)</span>
+<span class="nc" id="L35">				.collect(Collectors.toList());</span>
+	}
+
+	public void book(Movie movie, ShowTime time, String aSeat) throws BookingException{
+<span class="nc" id="L39">		MovieHall hall = DB.movies.get(movie.getTitle()+&quot;_&quot;+time.getValue());</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">		if(hall == null) {</span>
+<span class="nc" id="L41">			return;</span>
+		}
+		
+<span class="nc bnc" id="L44" title="All 4 branches missed.">		Optional&lt;Seat&gt; seatOpt = hall.getSeats().stream().filter(s -&gt; !s.isOccupied() &amp;&amp; s.getNumber().equals(aSeat)).findFirst();</span>
+<span class="nc" id="L45">		seatOpt.orElseThrow(() -&gt; new BookingException(&quot;Cannot book seat: &quot;+aSeat, ErrorType.SEAT_ALREADY_BOOKED)).setOccupied(true);</span>
+<span class="nc" id="L46">	}</span>
+
+	private static final class DB {
+<span class="nc" id="L49">		private static final Map&lt;String, MovieHall&gt; movies = new HashMap&lt;&gt;();</span>
+		static {
+<span class="nc" id="L51">			movies.put(&quot;Evening_LOTR&quot;, new MovieHall(&quot;SCREEN 1&quot;, Arrays.asList(new Seat(&quot;A1&quot;),</span>
+					new Seat(&quot;A2&quot;),
+					new Seat(&quot;A3&quot;),
+					new Seat(&quot;B1&quot;),
+					new Seat(&quot;B2&quot;),
+					new Seat(&quot;C1&quot;))));
+			
+<span class="nc" id="L58">			movies.put(&quot;Morning_Ice Age 3&quot;, new MovieHall(&quot;SCREEN 1&quot;, Arrays.asList(new Seat(&quot;A1&quot;),</span>
+					new Seat(&quot;A2&quot;),
+					new Seat(&quot;A3&quot;),
+					new Seat(&quot;B1&quot;),
+					new Seat(&quot;B2&quot;),
+					new Seat(&quot;C1&quot;))));
+<span class="nc" id="L64">		}</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
