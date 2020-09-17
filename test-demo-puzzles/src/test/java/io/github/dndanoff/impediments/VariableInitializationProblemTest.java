@@ -5,8 +5,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.dndanoff.impediments.VariableInitializationProblem;
-
 @RunWith(MockitoJUnitRunner.class)
 public class VariableInitializationProblemTest {
 	
@@ -14,7 +12,7 @@ public class VariableInitializationProblemTest {
 	VariableInitializationProblem.BadDependency dep;
 	
 	private VariableInitializationProblem objectUnderTest = new VariableInitializationProblem() {
-		VariableInitializationProblem.BadDependency createDependency() {
+		BadDependency createDependency() {
 			return dep;
 		};
 	};
